@@ -1,13 +1,19 @@
 //  The region we will deploy our cluster into.
 variable "region" {
   description = "Region to deploy the cluster into"
-  default = "us-east-1"
+  default = "eu-central-1"
 }
 
 //  The public key to use for SSH access.
 variable "public_key_path" {
   default = "~/.ssh/id_rsa.pub"
 }
+
+variable "postfix" {
+  description = "Postfix for resource names to be unique"
+  default = "oc"
+}
+
 
 //  This map defines which AZ to put the 'Public Subnet' in, based on the
 //  region defined. You will typically not need to change this unless

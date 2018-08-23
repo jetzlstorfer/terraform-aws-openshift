@@ -6,6 +6,10 @@ variable "amisize" {
   description = "The size of the cluster nodes, e.g: t2.large. Note that OpenShift will not run on anything smaller than t2.large"
 }
 
+variable "postfix" {
+  description = "Postfix for resource names to be unique"
+}
+
 variable "vpc_cidr" {
   description = "The CIDR block for the VPC, e.g: 10.0.0.0/16"
 }
