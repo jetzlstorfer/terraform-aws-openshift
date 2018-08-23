@@ -6,6 +6,7 @@ infrastructure:
 openshift:
 	# Add our identity for ssh, add the host key to avoid having to accept the
 	# the host key manually. Also add the identity of each node to the bastion.
+	eval `ssh-agent -s`
 	ssh-add ~/.ssh/id_rsa
 	ssh-keyscan -t rsa -H $$(terraform output bastion-public_dns) >> ~/.ssh/known_hosts
 	ssh -A ec2-user@$$(terraform output bastion-public_dns) "ssh-keyscan -t rsa -H master.openshift.local >> ~/.ssh/known_hosts"
@@ -23,7 +24,9 @@ openshift:
 
 # Open the console.
 browse-openshift:
-	open $$(terraform output master-url)
+	# open $$(terraform output master-url)
+	export masterurl=$$(terraform output master-url)
+	chrome $$(terraform output master-url)
 
 # SSH onto the master.
 ssh-bastion:
@@ -34,6 +37,14 @@ ssh-node1:
 	ssh -t -A ec2-user@$$(terraform output bastion-public_dns) ssh node1.openshift.local
 ssh-node2:
 	ssh -t -A ec2-user@$$(terraform output bastion-public_dns) ssh node2.openshift.local
+
+# login system:admin (requires capture of ~/.kube/config from cluster master copied to ~/.kube/config)
+local:
+	echo This will overwrite your .kube config To cancel hit CTRL-C
+	read Press ENTER to continue
+	ssh -A ec2-user@$$(terraform output bastion-public_dns) 'ssh master.openshift.local "cat ~/.kube/config"' > ~/.kube/config
+system:
+	oc login $$(terraform output master-url) -u system:admin
 
 # Create sample services.
 sample:
