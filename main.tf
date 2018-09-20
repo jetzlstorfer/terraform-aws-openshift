@@ -8,14 +8,14 @@ module "openshift" {
   source          = "./modules/openshift"
   region          = "${var.region}"
   amisize         = "t2.large"    //  Smallest that meets the min specs for OS
-  postfix         = "${var.postfix}"
+  suffix         = "${var.suffix}"
   vpc_cidr        = "10.0.0.0/16"
   subnetaz        = "${var.subnetaz}"
   subnet_cidr     = "10.0.1.0/24"
-  key_name        = "juergen-openshift"
+  key_name        = "juergen-openshift-sept2018"
   public_key_path = "${var.public_key_path}"
-  cluster_name    = "openshift-cluster"
-  cluster_id      = "openshift-cluster-${var.region}"
+  cluster_name    = "openshift-cluster-juergen"
+  cluster_id      = "openshift-cluster-juergen-${var.region}"
 }
 
 //  Output some useful variables for quick SSH access etc.

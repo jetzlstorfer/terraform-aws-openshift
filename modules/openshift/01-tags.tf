@@ -24,6 +24,6 @@ locals {
     "kubernetes.io/cluster/${var.cluster_name}", "${var.cluster_id}",
     "DeploymentVia", "terraform",
     "Creator","juergen.etzlstorfer@dynatrace.com",
-    "Demo","hackweek"
+    "Demo","Ticketmonster"
   )}"
 }

@@ -9,9 +9,9 @@ variable "public_key_path" {
   default = "~/.ssh/id_rsa.pub"
 }
 
-variable "postfix" {
-  description = "Postfix for resource names to be unique"
-  default = "oc"
+variable "suffix" {
+  description = "Suffix for resource names to be unique"
+  default = "oc-juergen"
 }
 
 
