@@ -8,3 +8,6 @@ terraform.tfstate.backup
 inventory.cfg
 *.lock.info
 .private.env
+
+# OneAgent Operator files
+cr.yaml
