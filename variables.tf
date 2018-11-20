@@ -1,7 +1,7 @@
 //  The region we will deploy our cluster into.
 variable "region" {
   description = "Region to deploy the cluster into"
-  default = "eu-central-1"
+  default = "us-east-1"
 }
 
 //  The public key to use for SSH access.
@@ -11,7 +11,7 @@ variable "public_key_path" {
 
 variable "suffix" {
   description = "Suffix for resource names to be unique"
-  default = "oc-juergen"
+  default = "oc-juergen-ansible-webinar"
 }
 
 
