@@ -8,23 +8,19 @@ openshift:
 	# the host key manually. Also add the identity of each node to the bastion.
 	eval `ssh-agent -s`
 	ssh-add ~/.ssh/id_rsa
-	ssh-keyscan -t rsa -H $$(terraform output bastion-public_ip) >> ~/.ssh/known_hosts
-	ssh -A ec2-user@$$(terraform output bastion-public_ip) "ssh-keyscan -t rsa -H master.openshift.local >> ~/.ssh/known_hosts"
-	ssh -A ec2-user@$$(terraform output bastion-public_ip) "ssh-keyscan -t rsa -H node1.openshift.local >> ~/.ssh/known_hosts"
-	ssh -A ec2-user@$$(terraform output bastion-public_ip) "ssh-keyscan -t rsa -H node2.openshift.local >> ~/.ssh/known_hosts"
+	ssh-keyscan -t rsa -H $$(terraform output bastion-public_dns) >> ~/.ssh/known_hosts
+	ssh -A ec2-user@$$(terraform output bastion-public_dns) "ssh-keyscan -t rsa -H master.openshift.local >> ~/.ssh/known_hosts"
+	ssh -A ec2-user@$$(terraform output bastion-public_dns) "ssh-keyscan -t rsa -H node1.openshift.local >> ~/.ssh/known_hosts"
+	ssh -A ec2-user@$$(terraform output bastion-public_dns) "ssh-keyscan -t rsa -H node2.openshift.local >> ~/.ssh/known_hosts"
 
 	# Copy our inventory to the master and run the install script.
-	scp ./inventory.cfg ec2-user@$$(terraform output bastion-public_ip):~
-	cat install-from-bastion.sh | ssh -o StrictHostKeyChecking=no -A ec2-user@$$(terraform output bastion-public_ip)
+	scp ./inventory.cfg ec2-user@$$(terraform output bastion-public_dns):~
+	cat install-from-bastion.sh | ssh -o StrictHostKeyChecking=no -A ec2-user@$$(terraform output bastion-public_dns)
 
 	# Now the installer is done, run the postinstall steps on each host.
-	cat ./scripts/postinstall-master.sh | ssh -A ec2-user@$$(terraform output bastion-public_ip) ssh master.openshift.local
-	cat ./scripts/postinstall-node.sh | ssh -A ec2-user@$$(terraform output bastion-public_ip) ssh node1.openshift.local
-	cat ./scripts/postinstall-node.sh | ssh -A ec2-user@$$(terraform output bastion-public_ip) ssh node2.openshift.local
-
-# Destroy the infrastructure.
-destroy:
-	terraform init && terraform destroy -auto-approve
+	cat ./scripts/postinstall-master.sh | ssh -A ec2-user@$$(terraform output bastion-public_dns) ssh master.openshift.local
+	cat ./scripts/postinstall-node.sh | ssh -A ec2-user@$$(terraform output bastion-public_dns) ssh node1.openshift.local
+	cat ./scripts/postinstall-node.sh | ssh -A ec2-user@$$(terraform output bastion-public_dns) ssh node2.openshift.local
 
 # Open the console.
 browse-openshift:
@@ -34,14 +30,14 @@ browse-openshift:
 
 # SSH onto the master.
 ssh-bastion:
-	ssh -t -A ec2-user@$$(terraform output bastion-public_ip)
+	ssh -t -A ec2-user@$$(terraform output bastion-public_dns)
 ssh-master:
-	ssh -t -A ec2-user@$$(terraform output bastion-public_ip) ssh master.openshift.local
+	ssh -t -A ec2-user@$$(terraform output bastion-public_dns) ssh master.openshift.local
 ssh-node1:
-	ssh -t -A ec2-user@$$(terraform output bastion-public_ip) ssh node1.openshift.local
+	ssh -t -A ec2-user@$$(terraform output bastion-public_dns) ssh node1.openshift.local
 ssh-node2:
-	ssh -t -A ec2-user@$$(terraform output bastion-public_ip) ssh node2.openshift.local
-	
+	ssh -t -A ec2-user@$$(terraform output bastion-public_dns) ssh node2.openshift.local
+
 # login system:admin (requires capture of ~/.kube/config from cluster master copied to ~/.kube/config)
 local:
 	echo This will overwrite your .kube config To cancel hit CTRL-C
